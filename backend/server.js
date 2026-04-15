@@ -10,7 +10,7 @@ const bookingRoutes = require('./routes/bookingRoutes')
 const app = express()
 
 // Middleware to handle CORS
-const allowedOrigins = [process.env.CLIENT_URL, "http://localhost:5173", "http://localhost:5174", "https://weise-two.vercel.app"].filter(
+const allowedOrigins = [process.env.CLIENT_URL, "http://localhost:5173", "http://localhost:5174", "https://isinmi-omega.vercel.app", "https://isinmi-hotel.vercel.app/"].filter(
   Boolean,
 );
 console.log(
