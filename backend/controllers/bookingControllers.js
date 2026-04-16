@@ -112,8 +112,9 @@ exports.createBooking = async (req, res) => {
     });
     // console.log(`Created booking ${booking._id} for ${guestName}`);
 
-    // ✅ Send confirmation email to guest (include numOfDays)
-    await sendBookingConfirmationEmail({
+    // ✅ Send confirmation email to guest — fire-and-forget so a mail
+    // failure never rolls back an already-saved booking.
+    sendBookingConfirmationEmail({
       guestName,
       guestEmail,
       booking,
@@ -123,7 +124,7 @@ exports.createBooking = async (req, res) => {
       },
       daysOfStay: numOfDays,
       category: category.name,
-    });
+    }).catch((err) => console.error("Confirmation email failed:", err.message));
 
     res.status(201).json({
       message:
@@ -271,7 +272,7 @@ const renderPage = (title, message, color) => `
 
 exports.getAllBookings = async (req, res) => {
   try {
-    if (!req.user || !req.user.isSuperAdmin) {
+    if (!req.user || (!req.user.isSuperAdmin && !req.user.isAdmin)) {
       return res.status(403).json({ message: "Access denied" });
     }
 

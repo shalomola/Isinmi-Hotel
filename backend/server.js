@@ -40,6 +40,10 @@ app.use((req, res, next) => {
   return res.status(403).send("CORS policy: Origin not allowed");
 });
 
+app.get('/health', (req, res) => {
+  res.status(200).json({ message: 'Server is healthy' });
+});
+
 // Debug: verify route imports are valid
 const routesToCheck = {
   authRoutes,
