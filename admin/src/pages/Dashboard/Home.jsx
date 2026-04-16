@@ -53,8 +53,8 @@ const Home = () => {
     (b) => new Date(b.createdAt).getFullYear() === currentYear - 1
   );
 
-  const totalRevenue = yearBookings.reduce((s, b) => s + (b.totalPrice || 0), 0);
-  const lastYearRevenue = lastYearBookings.reduce((s, b) => s + (b.totalPrice || 0), 0);
+  const totalRevenue = yearBookings.filter((b) => b.isPaid).reduce((s, b) => s + (b.totalPrice || 0), 0);
+  const lastYearRevenue = lastYearBookings.filter((b) => b.isPaid).reduce((s, b) => s + (b.totalPrice || 0), 0);
 
   const pendingCount = bookings.filter((b) => b.bookingStatus === 'pending').length;
 
@@ -168,8 +168,8 @@ const Home = () => {
         </div>
 
         {/* ── Recent bookings + Occupancy ── */}
-        <div className="grid grid-cols-5 gap-4 mb-6">
-          <div className="col-span-3 bg-white border border-gray-100 rounded-xl p-5">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 mb-6">
+          <div className="lg:col-span-3 bg-white border border-gray-100 rounded-xl p-5">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-sm font-medium text-gray-800">Recent bookings</h3>
               <button
@@ -179,7 +179,8 @@ const Home = () => {
                 View all →
               </button>
             </div>
-            <table className="w-full">
+            <div className="overflow-x-auto">
+            <table className="w-full min-w-[360px]">
               <thead>
                 <tr className="text-left">
                   {['Guest', 'Room', 'Check-in', 'Status'].map((h) => (
@@ -212,9 +213,10 @@ const Home = () => {
                 )}
               </tbody>
             </table>
+            </div>
           </div>
 
-          <div className="col-span-2 bg-white border border-gray-100 rounded-xl p-5">
+          <div className="lg:col-span-2 bg-white border border-gray-100 rounded-xl p-5">
             <h3 className="text-sm font-medium text-gray-800 mb-4">Occupancy</h3>
             {loading ? (
               <OccupancySkeleton />

@@ -20,6 +20,7 @@ export const SIDE_MENU_DATA = [
 export const STATUS = {
   confirmed: "bg-emerald-50 text-emerald-700",
   pending: "bg-amber-50 text-amber-700",
+  "in-progress": "bg-purple-50 text-purple-700",
   cancelled: "bg-red-50 text-red-600",
   completed: "bg-blue-50 text-blue-700",
 };

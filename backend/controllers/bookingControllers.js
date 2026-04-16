@@ -310,13 +310,39 @@ exports.getBookingById = async (req, res) => {
 
 exports.updateBooking = async (req, res) => {
   try {
-    const { checkInDate, checkOutDate, guestName, guestEmail } = req.body;
+    const { checkInDate, checkOutDate, guestName, guestEmail, bookingStatus, isPaid } = req.body;
 
     const booking = await Booking.findById(req.params.id);
     if (!booking) return res.status(404).json({ message: "Booking not found" });
 
     if (guestName) booking.guestName = guestName;
     if (guestEmail) booking.guestEmail = guestEmail;
+
+    if (bookingStatus !== undefined) {
+      const allowed = ['pending', 'confirmed', 'in-progress', 'cancelled', 'completed'];
+      if (!allowed.includes(bookingStatus)) {
+        return res.status(400).json({ message: "Invalid booking status" });
+      }
+
+      const wasInProgress = booking.bookingStatus === 'in-progress';
+      const willBeInProgress = bookingStatus === 'in-progress';
+
+      if (!wasInProgress && willBeInProgress) {
+        // Guest has checked in — mark room as unavailable
+        await Room.findByIdAndUpdate(booking.room, { available: false });
+      } else if (wasInProgress && !willBeInProgress) {
+        // Guest has checked out or status corrected — free the room
+        await Room.findByIdAndUpdate(booking.room, { available: true });
+      }
+
+      booking.bookingStatus = bookingStatus;
+    }
+
+    if (isPaid !== undefined) {
+      booking.isPaid = isPaid;
+      if (isPaid && !booking.paidAt) booking.paidAt = new Date();
+      if (!isPaid) booking.paidAt = undefined;
+    }
 
     if (checkInDate && checkOutDate) {
       const checkIn = new Date(checkInDate);
@@ -329,7 +355,7 @@ exports.updateBooking = async (req, res) => {
       const overlappingBooking = await Booking.findOne({
         room: booking.room,
         _id: { $ne: booking._id },
-        bookingStatus: "confirmed", // fixed: was 'status'
+        bookingStatus: { $in: ["confirmed", "pending"] },
         $or: [
           { checkInDate: { $lt: checkOut }, checkOutDate: { $gt: checkIn } },
         ],
@@ -343,6 +369,11 @@ exports.updateBooking = async (req, res) => {
 
       booking.checkInDate = checkIn;
       booking.checkOutDate = checkOut;
+
+      // Recalculate duration and total price
+      const days = Math.max(1, Math.ceil((checkOut - checkIn) / (1000 * 60 * 60 * 24)));
+      booking.daysOfStay = days;
+      if (booking.pricePerNight) booking.totalPrice = booking.pricePerNight * days;
     }
 
     await booking.save();
@@ -354,19 +385,17 @@ exports.updateBooking = async (req, res) => {
   }
 };
 
-exports.cancelBooking = async (req, res) => {
+exports.deleteBooking = async (req, res) => {
   try {
     const booking = await Booking.findById(req.params.id);
     if (!booking) return res.status(404).json({ message: "Booking not found" });
 
-    booking.bookingStatus = "cancelled"; // fixed: was booking.status
-
-    await booking.save();
-    res.status(200).json({ message: "Booking cancelled successfully" });
+    await booking.deleteOne();
+    res.status(200).json({ message: "Booking deleted successfully" });
   } catch (error) {
     res
       .status(500)
-      .json({ message: "Error cancelling booking", error: error.message });
+      .json({ message: "Error deleting booking", error: error.message });
   }
 };
 

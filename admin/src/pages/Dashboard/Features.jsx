@@ -6,7 +6,7 @@ import useUserAuth from '../../hooks/useUserAuth';
 import Modal from '../../components/Modal.jsx';
 import AddFeatureForm from '../../components/Features/AddFeatureForm.jsx';
 import toast from 'react-hot-toast';
-import { LuPlus } from 'react-icons/lu';
+import { LuPlus, LuPencil } from 'react-icons/lu';
 import { TableSkeleton } from '../../components/Skeleton.jsx';
 
 const Features = () => {
@@ -71,36 +71,38 @@ const Features = () => {
           <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
             <h3 className="text-sm font-medium text-gray-800">Room features</h3>
           </div>
-          <table className="w-full">
-            <thead className="bg-gray-50 border-b border-gray-100">
-              <tr>
-                {["Name", "Actions"].map((h) => (
-                  <th key={h} className="text-left text-xs text-gray-400 uppercase tracking-wide px-5 py-3 font-medium">{h}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {loading ? (
-                <TableSkeleton rows={5} cols={2} />
-              ) : featureData.length === 0 ? (
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[320px]">
+              <thead className="bg-gray-50 border-b border-gray-100">
                 <tr>
-                  <td colSpan={2} className="px-5 py-8 text-sm text-gray-400 text-center">No features found.</td>
+                  {["Name", "Actions"].map((h) => (
+                    <th key={h} className="text-left text-xs text-gray-400 uppercase tracking-wide px-5 py-3 font-medium">{h}</th>
+                  ))}
                 </tr>
-              ) : (
-                featureData.map((f) => (
-                  <tr key={f._id} className="border-t border-gray-50 hover:bg-gray-50 transition-colors">
-                    <td className="px-5 py-3.5 text-sm font-medium text-gray-800">{f.name}</td>
-                    <td
-                      className="px-5 py-3.5 text-xs text-emerald-700 cursor-pointer hover:underline"
-                      onClick={() => setEditTarget(f)}
-                    >
-                      Edit
-                    </td>
+              </thead>
+              <tbody>
+                {loading ? (
+                  <TableSkeleton rows={5} cols={2} />
+                ) : featureData.length === 0 ? (
+                  <tr>
+                    <td colSpan={2} className="px-5 py-8 text-sm text-gray-400 text-center">No features found.</td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+                ) : (
+                  featureData.map((f) => (
+                    <tr key={f._id} className="border-t border-gray-50 hover:bg-gray-50 transition-colors">
+                      <td className="px-5 py-3.5 text-sm font-medium text-gray-800">{f.name}</td>
+                      <td
+                        className="px-5 py-3.5 text-sm text-slate-400 hover:text-emerald-900 cursor-pointer hover:underline"
+                        onClick={() => setEditTarget(f)}
+                      >
+                        <LuPencil />
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
 
         <button

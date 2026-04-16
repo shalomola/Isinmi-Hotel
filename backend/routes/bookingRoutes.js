@@ -6,11 +6,11 @@ const {
   getAllBookings,
   getBookingById,
   updateBooking,
-  cancelBooking,
+  deleteBooking,
   getBookingsByRoom,
   getBookingsByGuest,
   checkCategoryAvailability,
-  confirmBooking 
+  confirmBooking
 } = require("../controllers/bookingControllers");
 
 const { protect, adminOnly, optionalProtect } = require("../middleware/authMiddleware");
@@ -24,7 +24,7 @@ router.post("/", optionalProtect, createBooking);
 // Admin only
 router.get("/", protect, adminOnly, getAllBookings);
 router.put("/:id", protect, adminOnly, updateBooking);
-router.delete("/:id", protect, adminOnly, cancelBooking);
+router.delete("/:id", protect, adminOnly, deleteBooking);
 
 // Public/mixed access — place before '/:id' to avoid route conflicts
 router.get("/room/:roomId", getBookingsByRoom);

@@ -1,55 +1,87 @@
-import React, { useContext, useState } from 'react'
-import { SIDE_MENU_DATA } from '../../utils/data.js'
-import { UserContext } from '../../context/userContext.jsx'
-import { useNavigate } from 'react-router-dom'
-import CharAvatar from '../Cards/CharAvatar.jsx'
-import useRouteHandlers from '../../hooks/useRouteHandlers.jsx'
+import { SIDE_MENU_DATA } from '../../utils/data.js';
+import { LuX } from 'react-icons/lu';
+import useRouteHandlers from '../../hooks/useRouteHandlers.jsx';
 
-const SideMenu = ({activeMenu, page, setPage}) => {
-    const { handleClick } = useRouteHandlers();
-    
+const SideMenu = ({ activeMenu, isOpen, onClose }) => {
+  const { handleClick } = useRouteHandlers();
+
+  const navigate = (path) => {
+    handleClick(path);
+    onClose();
+  };
+
   return (
-    <aside className="w-56 bg-white border-r border-gray-100 flex flex-col shrink-0">
-        <div className="px-5 py-5 border-b border-gray-100">
-            <p className="text-base font-medium tracking-tight text-gray-900">Isinmi Hotel</p>
-            <p className="text-xs text-gray-400 mt-0.5">Admin Dashboard</p>
+    <aside
+      className={`
+        fixed md:static inset-y-0 left-0 z-50
+        w-56 bg-white border-r border-gray-100 flex flex-col shrink-0
+        transform transition-transform duration-200 ease-in-out
+        ${isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+      `}
+    >
+      {/* Header */}
+      <div className="px-5 py-5 border-b border-gray-100 flex items-center justify-between">
+        <div>
+          <p className="text-base font-medium tracking-tight text-gray-900">Isinmi Hotel</p>
+          <p className="text-xs text-gray-400 mt-0.5">Admin Dashboard</p>
         </div>
+        <button
+          onClick={onClose}
+          className="md:hidden p-1 text-gray-400 hover:text-gray-600"
+          aria-label="Close menu"
+        >
+          <LuX size={18} />
+        </button>
+      </div>
 
-        <nav className="flex-1 py-4 overflow-y-auto">
-            <p className="text-[10px] text-gray-400 uppercase tracking-widest px-5 mb-2">Overview</p>
-            {SIDE_MENU_DATA.slice(0, 1).map((item) => (
-            <button key={item.id} onClick={() => handleClick(item.path)}
-                className={`w-full flex items-center gap-2.5 px-5 py-2.5 text-sm transition-all border-l-2 ${activeMenu == item.label ? "text-emerald-700 bg-emerald-50 border-emerald-600 font-medium" : "text-gray-500 border-transparent hover:bg-gray-50 hover:text-gray-800"}`}>
-                <span className=" text-black"><item.icon /></span>{item.label}
-            </button>
-            ))}
-            <p className="text-[10px] text-gray-400 uppercase tracking-widest px-5 mt-4 mb-2">Manage</p>
-            {SIDE_MENU_DATA.slice(1, 5).map((item) => (
-            <button key={item.id} onClick={() => handleClick(item.path)}
-                className={`w-full flex items-center gap-2.5 px-5 py-2.5 text-sm transition-all border-l-2 ${activeMenu == item.label ? "text-emerald-700 bg-emerald-50 border-emerald-600 font-medium" : "text-gray-500 border-transparent hover:bg-gray-50 hover:text-gray-800"}`}>
-                <span className="text-base"><item.icon /></span>{item.label}
-            </button>
-            ))}
-            <p className="text-[10px] text-gray-400 uppercase tracking-widest px-5 mt-4 mb-2">System</p>
-            {SIDE_MENU_DATA.slice(5).map((item) => (
-            <button key={item.id} onClick={() => handleClick(item.path)}
-                className={`w-full flex items-center gap-2.5 px-5 py-2.5 text-sm transition-all border-l-2 ${activeMenu == item.label ? "text-emerald-700 bg-emerald-50 border-emerald-600 font-medium" : "text-gray-500 border-transparent hover:bg-gray-50 hover:text-gray-800"}`}>
-                <span className="text-base"><item.icon /></span>{item.label}
-            </button>
-            ))}
-        </nav>
+      {/* Nav */}
+      <nav className="flex-1 py-4 overflow-y-auto">
+        <p className="text-[10px] text-gray-400 uppercase tracking-widest px-5 mb-2">Overview</p>
+        {SIDE_MENU_DATA.slice(0, 1).map((item) => (
+          <button
+            key={item.id}
+            onClick={() => navigate(item.path)}
+            className={`w-full flex items-center gap-2.5 px-5 py-2.5 text-sm transition-all border-l-2 ${activeMenu === item.label ? 'text-emerald-700 bg-emerald-50 border-emerald-600 font-medium' : 'text-gray-500 border-transparent hover:bg-gray-50 hover:text-gray-800'}`}
+          >
+            <span className="text-black"><item.icon /></span>{item.label}
+          </button>
+        ))}
 
-        <div className="px-5 py-4 border-t border-gray-100">
-            <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-full bg-emerald-50 flex items-center justify-center text-xs font-medium text-emerald-700">SA</div>
-            <div>
-                <p className="text-xs font-medium text-gray-800">Super Admin</p>
-                <p className="text-[10px] text-gray-400">isinmihotel.com</p>
-            </div>
-            </div>
+        <p className="text-[10px] text-gray-400 uppercase tracking-widest px-5 mt-4 mb-2">Manage</p>
+        {SIDE_MENU_DATA.slice(1, 5).map((item) => (
+          <button
+            key={item.id}
+            onClick={() => navigate(item.path)}
+            className={`w-full flex items-center gap-2.5 px-5 py-2.5 text-sm transition-all border-l-2 ${activeMenu === item.label ? 'text-emerald-700 bg-emerald-50 border-emerald-600 font-medium' : 'text-gray-500 border-transparent hover:bg-gray-50 hover:text-gray-800'}`}
+          >
+            <span className="text-base"><item.icon /></span>{item.label}
+          </button>
+        ))}
+
+        <p className="text-[10px] text-gray-400 uppercase tracking-widest px-5 mt-4 mb-2">System</p>
+        {SIDE_MENU_DATA.slice(5).map((item) => (
+          <button
+            key={item.id}
+            onClick={() => navigate(item.path)}
+            className={`w-full flex items-center gap-2.5 px-5 py-2.5 text-sm transition-all border-l-2 ${activeMenu === item.label ? 'text-emerald-700 bg-emerald-50 border-emerald-600 font-medium' : 'text-gray-500 border-transparent hover:bg-gray-50 hover:text-gray-800'}`}
+          >
+            <span className="text-base"><item.icon /></span>{item.label}
+          </button>
+        ))}
+      </nav>
+
+      {/* Footer */}
+      <div className="px-5 py-4 border-t border-gray-100">
+        <div className="flex items-center gap-2.5">
+          <div className="w-8 h-8 rounded-full bg-emerald-50 flex items-center justify-center text-xs font-medium text-emerald-700 shrink-0">SA</div>
+          <div className="min-w-0">
+            <p className="text-xs font-medium text-gray-800 truncate">Super Admin</p>
+            <p className="text-[10px] text-gray-400 truncate">isinmihotel.com</p>
+          </div>
         </div>
+      </div>
     </aside>
-  )
-}
+  );
+};
 
-export default SideMenu
+export default SideMenu;

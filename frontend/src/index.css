@@ -27,7 +27,7 @@
 
   /* Layout */
   --section-py:     80px;
-  --px:             clamp(10px, 5vw, 10px);
+  --px:             clamp(16px, 5vw, 80px);
 
   /* Radii */
   --radius:         8px;

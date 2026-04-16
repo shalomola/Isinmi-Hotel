@@ -6,7 +6,7 @@ import useUserAuth from '../../hooks/useUserAuth';
 import Modal from '../../components/Modal.jsx';
 import AddUserForm from '../../components/Users/AddUserForm.jsx';
 import toast from 'react-hot-toast';
-import { LuUserPlus } from 'react-icons/lu';
+import { LuUserPlus, LuPencil } from 'react-icons/lu';
 import { TableSkeleton } from '../../components/Skeleton.jsx';
 
 const roleLabel = (user) => {
@@ -92,55 +92,57 @@ const Users = () => {
           <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
             <h3 className="text-sm font-medium text-gray-800">Staff accounts</h3>
           </div>
-          <table className="w-full">
-            <thead className="bg-gray-50 border-b border-gray-100">
-              <tr>
-                {["Name", "Email", "Role", "Status", "Joined", ""].map((h) => (
-                  <th key={h} className="text-left text-xs text-gray-400 uppercase tracking-wide px-5 py-3 font-medium">{h}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {loading ? (
-                <TableSkeleton rows={5} cols={6} />
-              ) : userData.length === 0 ? (
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-160">
+              <thead className="bg-gray-50 border-b border-gray-100">
                 <tr>
-                  <td colSpan={6} className="px-5 py-8 text-sm text-gray-400 text-center">No staff accounts found.</td>
+                  {["Name", "Email", "Role", "Status", "Joined", ""].map((h) => (
+                    <th key={h} className="text-left text-xs text-gray-400 uppercase tracking-wide px-5 py-3 font-medium">{h}</th>
+                  ))}
                 </tr>
-              ) : (
-                userData.map((u) => (
-                  <tr key={u._id} className="border-t border-gray-50 hover:bg-gray-50 transition-colors">
-                    <td className="px-5 py-3.5">
-                      <div className="flex items-center gap-2.5">
-                        <div className="w-7 h-7 rounded-full bg-emerald-50 flex items-center justify-center text-xs font-medium text-emerald-700">
-                          {u.name?.split(" ").map((n) => n[0]).join("")}
-                        </div>
-                        <span className="text-sm font-medium text-gray-800">{u.name}</span>
-                      </div>
-                    </td>
-                    <td className="px-5 py-3.5 text-xs text-gray-400">{u.email}</td>
-                    <td className="px-5 py-3.5">
-                      <span className="text-xs bg-blue-50 text-blue-600 px-2.5 py-1 rounded-full">{roleLabel(u)}</span>
-                    </td>
-                    <td className="px-5 py-3.5">
-                      <span className={`text-xs px-2.5 py-1 rounded-full ${u.isActive ? "bg-emerald-50 text-emerald-700" : "bg-red-50 text-red-500"}`}>
-                        {u.isActive ? "Active" : "Inactive"}
-                      </span>
-                    </td>
-                    <td className="px-5 py-3.5 text-xs text-gray-400">
-                      {new Date(u.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
-                    </td>
-                    <td
-                      className="px-5 py-3.5 text-xs text-emerald-700 cursor-pointer hover:underline"
-                      onClick={() => setEditTarget(u)}
-                    >
-                      Edit
-                    </td>
+              </thead>
+              <tbody>
+                {loading ? (
+                  <TableSkeleton rows={5} cols={6} />
+                ) : userData.length === 0 ? (
+                  <tr>
+                    <td colSpan={6} className="px-5 py-8 text-sm text-gray-400 text-center">No staff accounts found.</td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+                ) : (
+                  userData.map((u) => (
+                    <tr key={u._id} className="border-t border-gray-50 hover:bg-gray-50 transition-colors">
+                      <td className="px-5 py-3.5">
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-7 h-7 rounded-full bg-emerald-50 flex items-center justify-center text-xs font-medium text-emerald-700">
+                            {u.name?.split(" ").map((n) => n[0]).join("")}
+                          </div>
+                          <span className="text-sm font-medium text-gray-800">{u.name}</span>
+                        </div>
+                      </td>
+                      <td className="px-5 py-3.5 text-xs text-gray-400">{u.email}</td>
+                      <td className="px-5 py-3.5">
+                        <span className="text-xs bg-blue-50 text-blue-600 px-2.5 py-1 rounded-full">{roleLabel(u)}</span>
+                      </td>
+                      <td className="px-5 py-3.5">
+                        <span className={`text-xs px-2.5 py-1 rounded-full ${u.isActive ? "bg-emerald-50 text-emerald-700" : "bg-red-50 text-red-500"}`}>
+                          {u.isActive ? "Active" : "Inactive"}
+                        </span>
+                      </td>
+                      <td className="px-5 py-3.5 text-xs text-gray-400">
+                        {new Date(u.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                      </td>
+                      <td
+                        className="px-5 py-3.5 text-sm text-slate-400 hover:text-emerald-900 cursor-pointer hover:underline"
+                        onClick={() => setEditTarget(u)}
+                      >
+                        <LuPencil />
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
 
         <button

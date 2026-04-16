@@ -100,13 +100,13 @@ const Rooms = () => {
         </div>
 
         {loading ? (
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {Array.from({ length: 6 }).map((_, i) => <RoomCardSkeleton key={i} />)}
           </div>
         ) : filtered.length === 0 ? (
           <p className="text-sm text-gray-400 py-8 text-center">No rooms found.</p>
         ) : (
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {filtered.map((r) => (
               <div
                 key={r._id}

@@ -1,35 +1,47 @@
-import React from 'react'
-import Navbar from './Navbar.jsx'
-import SideMenu from './SideMenu.jsx'
-import { useContext, useState } from 'react'
-import { UserContext } from '../../context/userContext.jsx'
-import Topbar from './Topbar.jsx'
+import { useState, useEffect } from 'react';
+import SideMenu from './SideMenu.jsx';
+import Topbar from './Topbar.jsx';
 
 const DashboardLayout = ({ children, activeMenu }) => {
-    const { user } = useContext(UserContext);
-    const [page, setPage] = useState("dashboard");
-    
-    // ensure Topbar always receives an object with a title property
-    const topbarPage = typeof page === 'string' ? { title: page } : page;
-    
-      return (
-        <div className="flex h-screen bg-gray-50 overflow-hidden font-sans">
-          {/* Sidebar */}
-          <SideMenu activeMenu={activeMenu} page={page} setPage={setPage} />
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
-          {/* Main */}
-          <div className="flex-1 flex flex-col overflow-hidden">
-            {/* Topbar */}
-            <Topbar activeMenu={activeMenu} />
+  // Close sidebar when viewport widens to desktop
+  useEffect(() => {
+    const mq = window.matchMedia('(min-width: 768px)');
+    const handler = (e) => { if (e.matches) setSidebarOpen(false); };
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, []);
 
-            {/* Content */}
-            <main className="flex-1 overflow-y-auto p-7">
-                {children}
-            </main>
+  return (
+    <div className="flex h-screen bg-gray-50 overflow-hidden font-sans">
+      {/* Mobile backdrop */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/40 md:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
 
-          </div>
-        </div>
-      );
-}
+      {/* Sidebar */}
+      <SideMenu
+        activeMenu={activeMenu}
+        isOpen={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+      />
 
-export default DashboardLayout
+      {/* Main */}
+      <div className="flex-1 flex flex-col overflow-hidden min-w-0">
+        <Topbar
+          activeMenu={activeMenu}
+          onMenuToggle={() => setSidebarOpen((v) => !v)}
+        />
+        <main className="flex-1 overflow-y-auto p-4 md:p-7">
+          {children}
+        </main>
+      </div>
+    </div>
+  );
+};
+
+export default DashboardLayout;
