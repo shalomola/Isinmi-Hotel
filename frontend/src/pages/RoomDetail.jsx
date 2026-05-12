@@ -82,8 +82,8 @@ const RoomDetail = () => {
         {hasImage ? (
           <img src={category.image.url} alt={category.name} />
         ) : (
-          <div style={{ height: '100%', background: 'linear-gradient(135deg, #1a3528 0%, #2d5c3f 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 96 }}>
-            🛏
+          <div className="room-card-placeholder" style={{ height: '100%' }}>
+            <span>Isinmi</span>
           </div>
         )}
         <div className="room-detail-hero-overlay" />
@@ -104,14 +104,14 @@ const RoomDetail = () => {
           </Link>
 
           <div className="room-detail-layout">
-            {/* Left — info */}
+            {/* Left info */}
             <div>
               <p className="room-detail-cat">Room Category</p>
               <h1 className="room-detail-name">{category.name}</h1>
 
               <div className="room-detail-price-row">
                 <span className="room-detail-price">
-                  {category.price > 0 ? `₦${category.price.toLocaleString()}` : 'Contact us'}
+                  {category.price > 0 ? `NGN ${category.price.toLocaleString()}` : 'Contact us'}
                 </span>
                 {category.price > 0 && (
                   <span style={{ fontSize: 14, color: 'var(--text-muted)' }}>/night</span>
@@ -145,7 +145,7 @@ const RoomDetail = () => {
                 {[
                   'Choose your dates and fill in your details on the right.',
                   'We\'ll assign you the best available room in this category.',
-                  'You\'ll receive a confirmation email — click the link to secure your booking.',
+                  'You will receive a confirmation email with a link to secure your booking.',
                   'Arrive and enjoy your stay. It\'s that simple.',
                 ].map((step, i) => (
                   <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 10, marginBottom: 10 }}>
@@ -156,7 +156,7 @@ const RoomDetail = () => {
               </div>
             </div>
 
-            {/* Right — Booking Widget */}
+            {/* Right booking widget */}
             <div>
               <BookingWidget room={widgetData} />
             </div>

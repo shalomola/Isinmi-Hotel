@@ -86,7 +86,7 @@ const BookingConfirm = () => {
                 </p>
               </div>
 
-              {/* Booking details — shown on success / already confirmed */}
+              {/* Booking details shown on success or already confirmed */}
               {(status === 'confirmed' || status === 'already_confirmed') && result?.checkInDate && (
                 <>
                   <div style={{ height: 1, background: 'var(--border)', margin: '0 48px' }} />
@@ -123,7 +123,7 @@ const BookingConfirm = () => {
                       )}
                       {result.totalPrice && (
                         <DetailRow icon={<LuCalendar size={15} />} label="Total"
-                          value={`₦${result.totalPrice.toLocaleString()}`}
+                          value={`NGN ${result.totalPrice.toLocaleString()}`}
                           bold
                         />
                       )}
@@ -177,7 +177,7 @@ const DetailRow = ({ icon, label, value, bold }) => (
   </div>
 );
 
-/* Map status string → visual config */
+/* Map status string to visual config */
 const STATUS_META = (status) =>
   STATE[status] ?? STATE.error;
 

@@ -18,7 +18,7 @@ const BookingWidget = ({ room }) => {
 
   const handleChange = (key, value) => setForm((prev) => ({ ...prev, [key]: value }));
 
-  // Live price estimate
+  // Live price estimate.
   const nights = useMemo(() => {
     if (!form.checkInDate || !form.checkOutDate) return 0;
     const diff = (new Date(form.checkOutDate) - new Date(form.checkInDate)) / 86400000;
@@ -75,9 +75,9 @@ const BookingWidget = ({ room }) => {
       {/* Header */}
       <div className="widget-header">
         <div className="widget-price">
-          ₦{room?.price?.toLocaleString() ?? '—'}
+          NGN {room?.price?.toLocaleString() ?? 'pending'}
         </div>
-        <p className="widget-price-note">per night · prices may vary by season</p>
+        <p className="widget-price-note">per night, prices may vary by season</p>
       </div>
 
       {/* Form */}
@@ -154,10 +154,10 @@ const BookingWidget = ({ room }) => {
         {nights > 0 && (
           <div className="price-summary">
             <span className="price-summary-label">
-              ₦{room?.price?.toLocaleString()} × {nights} night{nights !== 1 ? 's' : ''}
+              NGN {room?.price?.toLocaleString()} x {nights} night{nights !== 1 ? 's' : ''}
             </span>
             <span className="price-summary-value">
-              ₦{totalEstimate.toLocaleString()}
+              NGN {totalEstimate.toLocaleString()}
             </span>
           </div>
         )}
@@ -167,7 +167,7 @@ const BookingWidget = ({ room }) => {
           onClick={handleSubmit}
           disabled={loading}
         >
-          {loading ? 'Sending Request…' : 'Request to Book'}
+          {loading ? 'Sending request...' : 'Request to Book'}
         </button>
 
         <p className="widget-note">

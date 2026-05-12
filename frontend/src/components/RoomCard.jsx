@@ -11,7 +11,9 @@ const RoomCard = ({ room }) => {
         {hasImage ? (
           <img src={room.images[0].url} alt={room.name} />
         ) : (
-          <div className="room-card-placeholder">🛏</div>
+          <div className="room-card-placeholder">
+            <span>Isinmi</span>
+          </div>
         )}
         <span className={`room-status-badge ${room.available ? 'status-available' : 'status-occupied'}`}>
           {room.available ? 'Available' : 'Occupied'}
@@ -33,7 +35,7 @@ const RoomCard = ({ room }) => {
 
         <div className="room-card-footer">
           <div className="room-price">
-            <span className="price-amount">₦{room.price?.toLocaleString()}</span>
+            <span className="price-amount">NGN {room.price?.toLocaleString()}</span>
             <span className="price-night">/night</span>
           </div>
           <Link to={`/rooms/${room._id}`} className="room-card-btn">

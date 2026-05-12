@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { LuMapPin, LuPhone, LuMail, LuInstagram, LuFacebook, LuTwitter } from 'react-icons/lu';
+import { LuFacebook, LuInstagram, LuMail, LuMapPin, LuPhone, LuTwitter } from 'react-icons/lu';
 
 const Footer = () => {
   const year = new Date().getFullYear();
@@ -8,13 +8,11 @@ const Footer = () => {
     <footer className="footer" id="contact">
       <div className="container">
         <div className="footer-grid">
-          {/* Brand */}
-          <div>
-            <span className="footer-logo">Isinmi Hotel</span>
+          <div className="footer-brand">
+            <Link to="/" className="footer-logo">Isinmi Hotel</Link>
             <p className="footer-desc">
-              A sanctuary of comfort and elegance. We craft unforgettable
-              experiences for every guest, from business travellers to
-              families seeking a restful escape.
+              A calm Lagos stay for travelers who want good sleep, careful service,
+              and a front desk that keeps the day moving.
             </p>
             <div className="footer-social">
               <a href="#" className="social-btn" aria-label="Instagram"><LuInstagram /></a>
@@ -23,31 +21,28 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Quick Links */}
           <div>
-            <p className="footer-col-title">Quick Links</p>
+            <p className="footer-col-title">Explore</p>
             <nav className="footer-links">
               <Link to="/">Home</Link>
-              <Link to="/rooms">Rooms & Suites</Link>
-              <a href="#amenities">Amenities</a>
-              <a href="#contact">Contact Us</a>
+              <Link to="/rooms">Rooms</Link>
+              <a href="/#amenities">Amenities</a>
+              <a href="#contact">Contact</a>
             </nav>
           </div>
 
-          {/* Rooms */}
           <div>
-            <p className="footer-col-title">Our Rooms</p>
+            <p className="footer-col-title">Stay</p>
             <nav className="footer-links">
-              <Link to="/rooms">Standard Rooms</Link>
-              <Link to="/rooms">Deluxe Rooms</Link>
-              <Link to="/rooms">Executive Suites</Link>
-              <Link to="/rooms">Family Rooms</Link>
+              <Link to="/rooms">Standard rooms</Link>
+              <Link to="/rooms">Deluxe rooms</Link>
+              <Link to="/rooms">Executive suites</Link>
+              <Link to="/rooms">Family stays</Link>
             </nav>
           </div>
 
-          {/* Contact */}
           <div>
-            <p className="footer-col-title">Contact</p>
+            <p className="footer-col-title">Front desk</p>
             <div className="footer-contact-row">
               <LuMapPin className="footer-contact-icon" />
               <span>123 Isinmi Close, Victoria Island, Lagos, Nigeria</span>
@@ -63,11 +58,9 @@ const Footer = () => {
           </div>
         </div>
 
-        <hr className="footer-divider" />
-
         <div className="footer-bottom">
-          <span>© {year} Isinmi Hotel. All rights reserved.</span>
-          <span style={{ color: 'rgba(255,255,255,0.35)' }}>Crafted with care.</span>
+          <span>Copyright {year} Isinmi Hotel. All rights reserved.</span>
+          <span>Designed for quieter arrivals.</span>
         </div>
       </div>
     </footer>

@@ -1,25 +1,99 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  LuWifi, LuDumbbell, LuWaves, LuUtensils, LuBike,
-  LuSparkles, LuShirt, LuArrowRight,
+  LuArrowRight,
+  LuBath,
+  LuBike,
+  LuCalendarDays,
+  LuCar,
+  LuClock3,
+  LuCoffee,
+  LuDumbbell,
+  LuMapPin,
+  LuShieldCheck,
+  LuShirt,
+  LuSparkles,
+  LuUtensils,
+  LuWaves,
+  LuWifi,
 } from 'react-icons/lu';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import axiosInstance from '../utils/axiosInstance';
 import { API_PATHS } from '../utils/apiPaths';
-import heroImg from '../assets/hero.png';
+
+const HERO_IMAGE =
+  'https://res.cloudinary.com/dcgdwxqau/image/upload/v1776247648/The_Lush_and_Luxurious_Sanya_EDITION_on_Hainan_Island_bmqpxi.jpg';
 
 const AMENITIES = [
-  { icon: <LuWifi />,      label: 'Free Wi-Fi' },
-  { icon: <LuUtensils />,  label: 'Restaurant' },
-  { icon: <LuWaves />,     label: 'Swimming Pool' },
-  { icon: <LuSparkles />,  label: 'Spa & Wellness' },
-  { icon: <LuDumbbell />,  label: 'Fitness Center' },
-  // { icon: <LuTv2 />,       label: 'Smart TV' },
-  { icon: <LuShirt />,     label: 'Laundry Service' },
-  { icon: <LuBike />,      label: 'Bicycle Rental' },
+  { icon: <LuWifi />, label: 'Fast Wi-Fi', desc: 'Quiet work, video calls, and streaming without the hallway shuffle.' },
+  { icon: <LuUtensils />, label: 'Kitchen Table', desc: 'Seasonal plates, late breakfast, and light meals after meetings.' },
+  { icon: <LuWaves />, label: 'Pool Court', desc: 'A shaded water courtyard for slow mornings and warm evenings.' },
+  { icon: <LuSparkles />, label: 'Wellness Room', desc: 'Massage, steam, and recovery rituals arranged on request.' },
+  { icon: <LuDumbbell />, label: 'Training Studio', desc: 'Compact strength and cardio equipment for daily routines.' },
+  { icon: <LuShirt />, label: 'Laundry Care', desc: 'Pressed shirts, same-day refreshes, and travel-ready packing.' },
+  { icon: <LuBike />, label: 'City Rides', desc: 'Bicycles and driver support for close-by errands and discovery.' },
 ];
+
+const SERVICE_NOTES = [
+  { icon: <LuClock3 />, title: 'Late arrivals handled calmly', text: 'Send your flight time. We keep the handover simple.' },
+  { icon: <LuCoffee />, title: 'Breakfast without a rush', text: 'Choose an early tray, courtyard table, or in-room coffee.' },
+  { icon: <LuCar />, title: 'Airport transfers on request', text: 'A driver can meet you at arrivals and bring you straight in.' },
+  { icon: <LuShieldCheck />, title: 'Secure, private stay', text: 'Discreet access, attentive staff, and a front desk that knows your plans.' },
+];
+
+const RoomSkeleton = () => (
+  <div className="room-card skeleton-card">
+    <div className="skeleton-media" />
+    <div className="room-card-body">
+      <div className="skeleton-line short" />
+      <div className="skeleton-line title" />
+      <div className="skeleton-line" />
+      <div className="skeleton-line tiny" />
+    </div>
+  </div>
+);
+
+const CategoryCard = ({ category, index }) => {
+  const features = category.features?.slice(0, 3) || [];
+  const hasImage = category.image?.url;
+
+  return (
+    <article className="room-card" style={{ '--i': index }}>
+      <Link to={`/rooms/${category._id}`} className="room-card-img" aria-label={`View ${category.name}`}>
+        {hasImage ? (
+          <img src={category.image.url} alt={category.name} />
+        ) : (
+          <div className="room-card-placeholder">
+            <span>Isinmi</span>
+          </div>
+        )}
+      </Link>
+      <div className="room-card-body">
+        <p className="room-card-cat">Room Category</p>
+        <h3 className="room-card-name">{category.name}</h3>
+        {features.length > 0 && (
+          <div className="room-card-features">
+            {features.map((feature) => (
+              <span key={feature._id} className="feature-chip">{feature.name}</span>
+            ))}
+          </div>
+        )}
+        <div className="room-card-footer">
+          <div className="room-price">
+            <span className="price-amount">
+              {category.price > 0 ? `NGN ${category.price.toLocaleString()}` : 'Contact us'}
+            </span>
+            {category.price > 0 && <span className="price-night">per night</span>}
+          </div>
+          <Link to={`/rooms/${category._id}`} className="room-card-btn">
+            Book <LuArrowRight size={15} />
+          </Link>
+        </div>
+      </div>
+    </article>
+  );
+};
 
 const Home = () => {
   const [featuredCategories, setFeaturedCategories] = useState([]);
@@ -32,7 +106,7 @@ const Home = () => {
         const cats = res.data?.categories || [];
         setFeaturedCategories(cats.slice(0, 3));
       } catch {
-        // silently fail — homepage still renders
+        setFeaturedCategories([]);
       } finally {
         setLoading(false);
       }
@@ -44,157 +118,151 @@ const Home = () => {
     <>
       <Navbar />
 
-      {/* ── Hero ─────────────────────────────────── */}
-      <section className="hero">
-        <img src={'https://res.cloudinary.com/dcgdwxqau/image/upload/v1776247648/The_Lush_and_Luxurious_Sanya_EDITION_on_Hainan_Island_bmqpxi.jpg'} alt="" className="hero-bg" />
-        {/* <div className="hero-overlay" /> */}
+      <main>
+        <section className="hero">
+          <div className="hero-media" aria-hidden="true">
+            <img src={HERO_IMAGE} alt="" />
+          </div>
 
-        <div className="container">
-          <div className="hero-content">
-            <span className="hero-eyebrow">✦ Welcome to Isinmi Hotel</span>
-            <h1 className="hero-title">
-              Where Comfort<br />
-              Meets <em>Elegance</em>
-            </h1>
-            <p className="hero-sub">
-              Discover a world-class retreat designed to delight your senses.
-              Exceptional rooms, genuine hospitality, and memories that last a lifetime.
+          <div className="hero-shell">
+            <div className="hero-content">
+              <span className="hero-eyebrow">Isinmi Hotel, Lagos</span>
+              <h1 className="hero-title">A softer landing after the city.</h1>
+              <p className="hero-sub">
+                Tucked into a calm Lagos address, Isinmi pairs composed rooms,
+                steady service, and enough privacy to make a short stay feel fully reset.
+              </p>
+              <div className="hero-actions">
+                <Link to="/rooms" className="btn btn-primary">
+                  View rooms <LuArrowRight size={16} />
+                </Link>
+                <a href="#amenities" className="btn btn-quiet">
+                  Amenities
+                </a>
+              </div>
+            </div>
+
+            <aside className="arrival-panel" aria-label="Arrival highlights">
+              <div>
+                <span className="arrival-kicker">Tonight at Isinmi</span>
+                <p>Courtyard dinner until 22:30</p>
+              </div>
+              <div className="arrival-row">
+                <LuCalendarDays />
+                <span>Flexible check-in by arrangement</span>
+              </div>
+              <div className="arrival-row">
+                <LuMapPin />
+                <span>Victoria Island access without the noise</span>
+              </div>
+            </aside>
+          </div>
+        </section>
+
+        <section className="section intro-section">
+          <div className="container intro-grid">
+            <div>
+              <span className="section-tag">The mood</span>
+              <h2 className="section-title">Hotel comfort with the pace turned down.</h2>
+            </div>
+            <p className="section-subtitle">
+              Isinmi is built for guests who need their room to do more than hold luggage.
+              Rest properly, prepare for the next meeting, host a quiet breakfast, or arrive late
+              and still feel expected.
             </p>
-            <div className="hero-actions">
-              <Link to="/rooms" className="btn-hero-primary">
-                Explore Rooms <LuArrowRight size={16} />
+          </div>
+        </section>
+
+        <section className="section rooms-section">
+          <div className="container">
+            <div className="split-header">
+              <div>
+                <span className="section-tag">Stay options</span>
+                <h2 className="section-title">Rooms shaped for recovery, work, and unhurried mornings.</h2>
+              </div>
+              <Link to="/rooms" className="text-link">
+                See every room <LuArrowRight size={15} />
               </Link>
-              <a href="#amenities" className="btn-hero-outline">
-                Our Amenities
-              </a>
             </div>
-          </div>
-        </div>
 
-        {/* Stats bar */}
-        <div className="hero-stats-bar">
-          <div className="hero-stats-inner">
-            {[
-              { num: '50+', label: 'Luxury Rooms' },
-              { num: '10+', label: 'Years of Excellence' },
-              { num: '98%', label: 'Guest Satisfaction' },
-              { num: '24/7', label: 'Concierge Service' },
-            ].map((s) => (
-              <div key={s.label} className="hero-stat">
-                <span className="hero-stat-num">{s.num}</span>
-                <span className="hero-stat-label">{s.label}</span>
+            {loading ? (
+              <div className="rooms-grid">
+                {[0, 1, 2].map((item) => <RoomSkeleton key={item} />)}
               </div>
-            ))}
+            ) : featuredCategories.length > 0 ? (
+              <div className="rooms-grid">
+                {featuredCategories.map((category, index) => (
+                  <CategoryCard key={category._id} category={category} index={index} />
+                ))}
+              </div>
+            ) : (
+              <div className="empty-state compact">
+                <h3 className="empty-state-title">Rooms are being prepared</h3>
+                <p className="empty-state-text">Please check again soon or contact the front desk.</p>
+              </div>
+            )}
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* ── Featured Rooms ───────────────────────── */}
-      <section className="section">
-        <div className="container">
-          <div className="section-header">
-            <span className="section-tag">Our Accommodations</span>
-            <h2 className="section-title">Rooms & Suites</h2>
-            <p className="section-subtitle">
-              Each room is thoughtfully curated with premium furnishings,
-              modern amenities, and refined details to ensure a truly restorative stay.
-            </p>
-          </div>
+        <section className="section amenities-section" id="amenities">
+          <div className="container amenities-layout">
+            <div className="amenities-copy">
+              <span className="section-tag">Amenities</span>
+              <h2 className="section-title">The details that make a stay feel handled.</h2>
+              <p className="section-subtitle">
+                Small comforts matter when travel days are full. The essentials are close,
+                the service is human, and the pace stays easy.
+              </p>
+            </div>
 
-          {loading ? (
-            <div className="rooms-grid">
-              {[1, 2, 3].map((i) => (
-                <div key={i} style={{ borderRadius: 'var(--radius-lg)', overflow: 'hidden', background: 'var(--white)', boxShadow: 'var(--shadow-sm)' }}>
-                  <div style={{ height: 220, background: 'var(--cream-dark)' }} />
-                  <div style={{ padding: 20 }}>
-                    <div style={{ height: 12, background: 'var(--cream-dark)', borderRadius: 6, marginBottom: 10, width: '40%' }} />
-                    <div style={{ height: 18, background: 'var(--cream-dark)', borderRadius: 6, marginBottom: 16 }} />
-                    <div style={{ height: 12, background: 'var(--cream-dark)', borderRadius: 6, width: '60%' }} />
+            <div className="amenities-grid">
+              {AMENITIES.map(({ icon, label, desc }) => (
+                <article key={label} className="amenity-card">
+                  <span className="amenity-icon">{icon}</span>
+                  <div>
+                    <h3 className="amenity-label">{label}</h3>
+                    <p>{desc}</p>
                   </div>
-                </div>
+                </article>
               ))}
             </div>
-          ) : featuredCategories.length > 0 ? (
-            <div className="rooms-grid">
-              {featuredCategories.map((cat) => (
-                <div key={cat._id} className="room-card">
-                  <div className="room-card-img">
-                    {cat.image?.url
-                      ? <img src={cat.image.url} alt={cat.name} />
-                      : <div className="room-card-placeholder">🛏</div>
-                    }
+          </div>
+        </section>
+
+        <section className="section service-section">
+          <div className="container service-grid">
+            <div className="service-image">
+              <img src="https://picsum.photos/seed/isinmi-lounge/1100/1400" alt="Hotel lounge with warm seating" />
+            </div>
+            <div className="service-list">
+              <span className="section-tag">Guest rhythm</span>
+              <h2 className="section-title">A front desk that remembers the practical things.</h2>
+              {SERVICE_NOTES.map(({ icon, title, text }) => (
+                <article key={title} className="service-note">
+                  <span>{icon}</span>
+                  <div>
+                    <h3>{title}</h3>
+                    <p>{text}</p>
                   </div>
-                  <div className="room-card-body">
-                    <p className="room-card-cat">Room Category</p>
-                    <h3 className="room-card-name">{cat.name}</h3>
-                    {cat.features?.length > 0 && (
-                      <div className="room-card-features">
-                        {cat.features.slice(0, 3).map((f) => (
-                          <span key={f._id} className="feature-chip">{f.name}</span>
-                        ))}
-                      </div>
-                    )}
-                    <div className="room-card-footer">
-                      <div className="room-price">
-                        <span className="price-amount">
-                          {cat.price > 0 ? `₦${cat.price.toLocaleString()}` : 'Contact us'}
-                        </span>
-                        {cat.price > 0 && <span className="price-night">/night</span>}
-                      </div>
-                      <Link to={`/rooms/${cat._id}`} className="room-card-btn">Book Now</Link>
-                    </div>
-                  </div>
-                </div>
+                </article>
               ))}
             </div>
-          ) : null}
-
-          <div style={{ textAlign: 'center', marginTop: 44 }}>
-            <Link to="/rooms" className="btn-hero-outline" style={{ color: 'var(--green-dark)', borderColor: 'var(--green-dark)', borderRadius: 'var(--radius-full)', padding: '12px 32px', fontSize: 14, fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 8, transition: 'all 0.2s' }}>
-              View All Rooms <LuArrowRight size={15} />
-            </Link>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* ── Amenities ────────────────────────────── */}
-      <section className="section amenities-bg" id="amenities">
-        <div className="container">
-          <div className="section-header centered">
-            <span className="section-tag">Resort-Style Living</span>
-            <h2 className="section-title">Discover Our Amenities</h2>
-            <p className="section-subtitle">
-              Immerse yourself in a world of relaxation and recreation.
-              Everything you need is right here.
-            </p>
-          </div>
-
-          <div className="amenities-grid">
-            {AMENITIES.map(({ icon, label }) => (
-              <div key={label} className="amenity-card">
-                <span className="amenity-icon">{icon}</span>
-                <span className="amenity-label">{label}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── CTA ──────────────────────────────────── */}
-      <section className="cta-section">
-        <div className="container">
-          <div className="cta-inner">
-            <h2 className="cta-title">Ready to Experience Isinmi?</h2>
+        <section className="cta-section">
+          <div className="container cta-inner">
+            <span className="section-tag">Reservations</span>
+            <h2 className="cta-title">Arrive with less to manage.</h2>
             <p className="cta-sub">
-              Book your stay today and let us take care of the rest.
-              Exceptional comfort awaits you.
+              Choose a room category, send your dates, and our team will confirm the best available room.
             </p>
-            <Link to="/rooms" className="cta-btn">
-              Reserve a Room
+            <Link to="/rooms" className="btn btn-light">
+              Reserve a room <LuArrowRight size={16} />
             </Link>
           </div>
-        </div>
-      </section>
+        </section>
+      </main>
 
       <Footer />
     </>
